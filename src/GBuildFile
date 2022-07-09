@@ -1,0 +1,46 @@
+if(argc > 1) {
+	if(arg1 == "clean") {
+		$"rm -f ../bin/*";
+		$"rm -f ./cpc";
+		#exit(0);
+	}
+
+	$"echo \"Can't recognize argument " + arg1 + "\"" &;
+	#exit(1);
+}
+
+let cc = "clang";
+let ld = "clang";
+
+let warnings = "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-multichar ";
+
+let cflags = warnings + "-O3 -IInclude -pipe -std=gnu11 -g ";
+
+
+let status = 0;
+
+let start = uptime();
+
+#foreach("c")
+{
+	let src = dir + "/" + file;
+	let obj = "../bin/" + cut(file, 0, 2) + hexof(hashof(src)) + ".o";
+
+	status = status + ($cc + " " + cflags + "-c " + src + " -o " + obj);
+
+	$"echo " &;
+}
+
+if(status > 0) {
+	$"echo Compilation failed." &;
+	#exit(1);
+}
+
+status = ($ld + " -lm ../bin/*.o -o ./cpc");
+
+if(status > 0) {
+	$"echo Linkage failed." &;
+	#exit(1);
+}
+
+$"echo \"Compilation successful. (" + (uptime() - start) + "s)\"" &;
