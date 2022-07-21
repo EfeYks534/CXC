@@ -17,8 +17,9 @@ struct Token
 	{
 		struct
 		{
-			char  *str;
-			uint64 len;
+			char   *str;
+			uint64  len;
+			uint64 hash;
 		};
 
 		uint64 num;

@@ -286,6 +286,8 @@ uint64 Lex(struct Token *tok)
 			return Lex(tok);
 		}
 
+		tok->hash = Hash(tok->str);
+
 		break;
 	  }
 	case '"': {
@@ -314,8 +316,6 @@ uint64 Lex(struct Token *tok)
 		tok->token = TK_INT;
 		tok->num   = 0;
 
-		int i = 0;
-
 		while(1) {
 			if(LexCh() == '\'')
 				break;
@@ -323,9 +323,7 @@ uint64 Lex(struct Token *tok)
 				LexPutCh();
 
 			uint64 c = LexStrCh();
-			tok->num |= (c << i);
-
-			i += 8;
+			tok->num = (tok->num << 8) | c;
 		}
 
 		break;
@@ -511,13 +509,13 @@ uint64 Lex(struct Token *tok)
 
 		ch = LexCh();
 
-		switch(tok->token | ((uint64) ch << 8))
+		switch((tok->token << 8) | ch)
 		{
 		case '<<':case '>>':
-			tok->token = tok->token | ((uint64) ch << 8);
+			tok->token = (tok->token << 8) | ch << 8;
 
 			if(LexCh() == '=')
-				tok->token = tok->token | ((uint64) '=' << 16);
+				tok->token = (tok->token << 8) | '=';
 			else
 				LexPutCh();
 			break;
@@ -526,7 +524,7 @@ uint64 Lex(struct Token *tok)
 		case '++':case '--':case '%%':case '||':
 		case '<=':case '>=':case '==':case '->':
 		case '!=':
-			tok->token = tok->token | ((uint64) ch << 8);
+			tok->token = (tok->token << 8) | ch;
 			break;
 		default:
 			LexPutCh();

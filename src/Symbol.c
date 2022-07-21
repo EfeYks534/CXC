@@ -11,12 +11,12 @@ static struct Symbol **symtabs[4] = {
 };
 
 
-static uint64 Hash(const char *name)
+uint64 Hash(const char *name)
 {
 	uint64 hash = 0;
 
 	while(*name) {
-		hash = (hash << 8) | (hash >> 56);
+		hash = (hash << 7) | (hash >> 57);
 		hash |= *name;
 
 		name++;
@@ -110,6 +110,7 @@ static bool _SymErase(struct Symbol **symtab, const char *name)
 
 bool SymInsert(struct Symbol *sym, uint8 type)
 {
+	sym->type = type;
 	return _SymInsert(symtabs[type], sym);
 }
 

@@ -1,4 +1,5 @@
 #include <Types.h>
+#include <Front.h>
 #include <sys/mman.h>
 
 
@@ -27,4 +28,21 @@ void *Alloc(uint64 size)
 void *AllocZ(uint64 size)
 {
 	return memset(Alloc(size), 0, size);
+}
+
+void *AllocNode(uint64 type)
+{
+	struct Node *node;
+	switch(type)
+	{
+	case NODE_LVALUE: node = AllocZ(sizeof(struct LValue)); break;
+	case NODE_RVALUE: node = AllocZ(sizeof(struct RValue)); break;
+	case NODE_EXPR:   node = AllocZ(sizeof(struct Expr));   break;
+	case NODE_STMT:   node = AllocZ(sizeof(struct Node));   break;
+	case NODE_ASSIGN: node = AllocZ(sizeof(struct Node));   break;
+	default:          assert(0);
+	}
+
+	node->type = type;
+	return node;
 }

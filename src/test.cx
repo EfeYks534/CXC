@@ -1,0 +1,9 @@
+#include "stddef.hx"
+
+int i;
+
+i = 5 + 2 * 3;
+
+i += 3;
+
+i++;

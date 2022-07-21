@@ -8,6 +8,7 @@
 #define KIND_ARR   0x03
 #define KIND_STRUC 0x04
 #define KIND_FUNC  0x05
+#define KIND_VOID  0x06
 
 
 struct SymStruc;
@@ -32,6 +33,10 @@ struct Type *TypeMake();
 struct Type *TypePtrTo(struct Type *type);
 
 struct Type *TypeDerive(struct Type *type);
+
+struct Type *TypeStrucOf(struct SymStruc *struc);
+
+struct Type *TypeFuncOf(struct SymFunc *func);
 
 bool TypeCompare(struct Type *a, struct Type *b);
 
